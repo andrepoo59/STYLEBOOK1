@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block titulo %}Reprogramar cita · StyleBook{% endblock %}
+{% block contenido %}
+  <section class="formulario-angosto">
+    <h1>Reprogramar cita</h1>
+    <p class="detalle-menor">
+      {{ cita.servicios.nombre if cita.servicios else "Servicio" }} con
+      {{ cita.profesionales.nombre_negocio if cita.profesionales else "" }}<br>
+      Horario actual: {{ cita.fecha_txt }} &middot; {{ cita.hora_txt }}
+    </p>
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <label for="fecha">Nueva fecha</label>
+      <input type="date" id="fecha" name="fecha" value="{{ fecha }}" min="{{ fecha_min }}" max="{{ fecha_max }}" required />
+
+      <label for="hora_inicio">Nueva hora (solo horarios libres)</label>
+      <select id="hora_inicio" name="hora_inicio" required>
+        <option value="">Elige primero una fecha</option>
+      </select>
+      <p class="detalle-menor" id="aviso-horarios"></p>
+
+      <button type="submit" class="boton">Confirmar cambio</button>
+    </form>
+    <p><a href="{{ url_for('citas.mis_citas') }}">Volver a mis citas</a></p>
+  </section>
+
+  <script>
+    const inputFecha = document.getElementById("fecha");
+    const selectHorario = document.getElementById("hora_inicio");
+    const aviso = document.getElementById("aviso-horarios");
+
+    async function actualizarHorarios() {
+      aviso.textContent = "";
+      if (!inputFecha.value) return;
+      const url = "/profesionales/{{ cita.profesional_id }}/horarios-disponibles"
+        + "?servicio_id={{ cita.servicio_id }}&excluir={{ cita.id }}&fecha=" + encodeURIComponent(inputFecha.value);
+      const datos = await (await fetch(url)).json();
+
+      selectHorario.innerHTML = "";
+      if (datos.horarios.length === 0) {
+        selectHorario.innerHTML = '<option value="">Sin horarios libres ese día</option>';
+        aviso.textContent = datos.aviso || "";
+        return;
+      }
+      datos.horarios.forEach((h) => {
+        const o = document.createElement("option");
+        o.value = h; o.textContent = h;
+        selectHorario.appendChild(o);
+      });
+    }
+    inputFecha.addEventListener("change", actualizarHorarios);
+    if (inputFecha.value) actualizarHorarios();
+  </script>
+{% endblock %}

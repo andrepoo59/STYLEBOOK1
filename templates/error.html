@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}Error {{ codigo }} · StyleBook{% endblock %}
+{% block contenido %}
+  <section class="error-pagina">
+    <p class="codigo display">{{ codigo }}</p>
+    <h1>{{ mensaje }}</h1>
+    <p><a class="boton" href="{{ url_for('index') }}">Volver al inicio</a></p>
+  </section>
+{% endblock %}

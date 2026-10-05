@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block titulo %}Crear cuenta · StyleBook{% endblock %}
+{% block contenido %}
+  <section class="formulario-angosto">
+    <h1>Crear cuenta</h1>
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <label for="tipo_cuenta">Tipo de cuenta</label>
+      <select id="tipo_cuenta" name="tipo_cuenta">
+        {% for clave, texto in tipos.items() %}
+          <option value="{{ clave }}" {% if form.get('tipo_cuenta') == clave %}selected{% endif %}>{{ texto }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="nombre">Nombre completo</label>
+      <input type="text" id="nombre" name="nombre" maxlength="100" value="{{ form.get('nombre', '') }}" required />
+
+      <label for="telefono">Teléfono</label>
+      <input type="tel" id="telefono" name="telefono" maxlength="20" value="{{ form.get('telefono', '') }}" />
+
+      <label for="email">Correo electrónico</label>
+      <input type="email" id="email" name="email" value="{{ form.get('email', '') }}" required />
+
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" name="password" minlength="6" required />
+
+      <p class="detalle-menor">
+        Si eres establecimiento o profesional independiente, al entrar te pediremos los datos de tu negocio
+        (nombre, ubicación, horarios y contacto). Un administrador los revisa antes de publicarlos.
+      </p>
+
+      <button type="submit" class="boton">Crear cuenta</button>
+    </form>
+    <p>¿Ya tienes cuenta? <a href="{{ url_for('auth.login') }}">Inicia sesión</a></p>
+  </section>
+{% endblock %}

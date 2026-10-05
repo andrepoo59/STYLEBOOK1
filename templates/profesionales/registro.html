@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% set editando = negocio and negocio.get('id') %}
+{% block titulo %}{{ "Mi negocio" if editando else "Registrar mi negocio" }} · StyleBook{% endblock %}
+{% block contenido %}
+  <section class="formulario-angosto">
+    <h1>{{ "Datos de mi negocio" if editando else "Registra tu negocio" }}</h1>
+    <p>Esta información aparece en tu perfil público. Mantenla actualizada: servicios, precios, horarios y contacto.</p>
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <label for="nombre_negocio">Nombre del negocio o profesional</label>
+      <input type="text" id="nombre_negocio" name="nombre_negocio" maxlength="100"
+             value="{{ negocio.nombre_negocio if negocio else '' }}" required />
+
+      <label for="especialidad">Especialidad</label>
+      <input type="text" id="especialidad" name="especialidad" maxlength="100"
+             placeholder="Ej. Barbería, Colorimetría, Uñas"
+             value="{{ negocio.especialidad if negocio else '' }}" required />
+
+      <label for="descripcion">Descripción</label>
+      <textarea id="descripcion" name="descripcion" rows="4" maxlength="1000">{{ negocio.descripcion or '' if negocio else '' }}</textarea>
+
+      <label for="ubicacion">Ubicación (dirección y ciudad)</label>
+      <input type="text" id="ubicacion" name="ubicacion" maxlength="200"
+             placeholder="Ej. Cra 5 # 10-20, Cúcuta"
+             value="{{ negocio.ubicacion or '' if negocio else '' }}" required />
+
+      <label for="telefono">Teléfono de contacto</label>
+      <input type="tel" id="telefono" name="telefono" maxlength="20"
+             value="{{ negocio.telefono or '' if negocio else '' }}" required />
+
+      <label for="anios_experiencia">Años de experiencia</label>
+      <input type="number" id="anios_experiencia" name="anios_experiencia" min="0" max="80"
+             value="{{ negocio.anios_experiencia or 0 if negocio else 0 }}" />
+
+      <button type="submit" class="boton">{{ "Guardar cambios" if editando else "Completar registro" }}</button>
+    </form>
+    {% if editando %}<p><a href="{{ url_for('perfil.ver') }}">Volver a mi perfil</a></p>{% endif %}
+  </section>
+{% endblock %}

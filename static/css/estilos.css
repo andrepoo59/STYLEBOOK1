@@ -1,0 +1,209 @@
+/* ============================================================
+   StyleBook · sistema visual
+   Motivo: tarjeta de cita / ficha de salón — tarjetas con precio
+   y duración como dato protagonista, tono cálido de salón/barbería.
+   ============================================================ */
+
+:root{
+  --tinta:#2B2320;
+  --tinta-suave:#7A6E68;
+  --linea:#E8DDD6;
+  --papel:#FFFFFF;
+  --crema:#FBF6F2;
+  --rosa:#B5654D;
+  --rosa-oscuro:#8F4D3A;
+  --rosa-tenue:#F3E4DE;
+  --dorado:#B4890A;
+  --rojo:#B3261E;
+
+  --r-chico:8px;
+  --r-pastilla:999px;
+  --col:1120px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+
+body{
+  background:var(--crema);
+  color:var(--tinta);
+  font-family:"Inter","Segoe UI",system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.55;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+h1,h2,h3,.display{
+  font-family:"Playfair Display",Georgia,"Times New Roman",serif;
+  font-weight:700;
+  line-height:1.1;
+  letter-spacing:-.01em;
+}
+h1{font-size:clamp(1.9rem,4.5vw,2.8rem)}
+h2{font-size:1.4rem;margin-bottom:.6rem}
+h3{font-size:1.05rem}
+
+a{color:inherit}
+
+.envoltura{max-width:var(--col);margin:0 auto;padding:0 1.25rem;width:100%}
+
+/* ---------- barra superior ---------- */
+.barra{
+  border-bottom:1px solid var(--linea);
+  background:var(--papel);
+  position:sticky;top:0;z-index:40;
+  display:flex;align-items:center;gap:1rem;
+  padding:0 32px;height:66px;
+}
+.marca{
+  font-family:Georgia,serif;
+  font-weight:800;font-size:1.35rem;letter-spacing:-.02em;
+  color:var(--rosa-oscuro);text-decoration:none;
+}
+.menu{margin-left:auto;display:flex;align-items:center;gap:1.3rem;flex-wrap:wrap}
+.menu a{font-weight:500;font-size:.95rem;color:var(--tinta);text-decoration:none}
+.menu a:hover{color:var(--rosa-oscuro);text-decoration:underline}
+
+/* ---------- contenido / pie ---------- */
+.contenido{
+  max-width:var(--col);
+  margin:0 auto;
+  padding:36px 20px;
+  width:100%;
+  flex:1;
+}
+.pie{
+  text-align:center;padding:22px;color:var(--tinta-suave);
+  font-size:.85rem;border-top:1px solid var(--linea);
+}
+
+/* ---------- hero (portada) ---------- */
+.hero{
+  text-align:center;
+  padding:48px 20px 56px;
+}
+.hero p{
+  max-width:560px;margin:14px auto 26px;
+  color:var(--tinta-suave);font-size:1.05rem;
+}
+.acciones{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ---------- mensajes flash ---------- */
+.mensajes{margin-bottom:22px}
+.mensaje{
+  border-radius:var(--r-chico);padding:.7rem .95rem;
+  font-size:.92rem;margin-bottom:.5rem;border:1px solid;
+}
+.mensaje-success{background:#e5f4ea;border-color:#bfe3cc;color:#2f7a4f}
+.mensaje-error{background:#fbe9e7;border-color:#f3c6c0;color:var(--rojo)}
+
+/* ---------- botones ---------- */
+.boton,button{
+  font:inherit;font-weight:600;font-size:.95rem;
+  border:1px solid transparent;border-radius:var(--r-pastilla);
+  padding:.6rem 1.2rem;cursor:pointer;
+  text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;
+  background:var(--rosa);color:#fff;
+  transition:background .15s,border-color .15s,color .15s;
+}
+.boton:hover,button:hover{background:var(--rosa-oscuro);text-decoration:none}
+.boton-secundario{
+  background:transparent;color:var(--rosa-oscuro);
+  border-color:var(--rosa);
+}
+.boton-secundario:hover{background:var(--rosa-tenue);color:var(--rosa-oscuro)}
+
+/* ---------- formularios ---------- */
+form{display:flex;flex-direction:column;gap:1rem;max-width:480px}
+label{font-size:.85rem;font-weight:600;margin-bottom:-.6rem}
+input,select,textarea{
+  width:100%;font:inherit;color:var(--tinta);
+  background:var(--papel);
+  border:1px solid var(--linea);border-radius:var(--r-chico);
+  padding:.65rem .8rem;
+}
+textarea{resize:vertical;min-height:86px}
+input:focus,select:focus,textarea:focus{
+  outline:none;border-color:var(--rosa);
+  box-shadow:0 0 0 3px #b5654d24;
+}
+
+.formulario-angosto{max-width:480px}
+.formulario-angosto p{margin-top:1rem;color:var(--tinta-suave)}
+
+/* ---------- tarjetas ---------- */
+.rejilla,.rejilla-tarjetas{
+  display:grid;gap:1.1rem;
+  grid-template-columns:repeat(auto-fill,minmax(255px,1fr));
+  margin-top:1.2rem;
+}
+.tarjeta{
+  background:var(--papel);
+  border:1px solid var(--linea);
+  border-radius:var(--r-chico);
+  padding:1.25rem;
+  display:block;text-decoration:none;color:inherit;
+  transition:border-color .15s,box-shadow .15s;
+}
+a.tarjeta:hover{border-color:var(--rosa);box-shadow:0 2px 10px #b5654d1a}
+.tarjeta h2,.tarjeta h3{color:var(--tinta)}
+.tarjeta p{color:var(--tinta-suave);font-size:.92rem;margin-top:.35rem}
+
+/* ---------- profesionales: avatar y encabezado ---------- */
+.tarjeta-profesional{display:flex;gap:.9rem;align-items:flex-start}
+.avatar-iniciales{
+  flex:none;width:46px;height:46px;border-radius:50%;
+  background:var(--rosa-tenue);color:var(--rosa-oscuro);
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Playfair Display",Georgia,serif;font-weight:700;font-size:1.15rem;
+}
+.encabezado-profesional{display:flex;gap:1.1rem;align-items:center;margin-bottom:1rem}
+.avatar-grande{width:64px;height:64px;font-size:1.6rem}
+.encabezado-profesional h1{margin-bottom:.3rem}
+
+.precio{
+  font-family:Georgia,serif;
+  font-weight:700;font-size:1.25rem;color:var(--rosa-oscuro);
+}
+.detalle-menor{font-size:.84rem;color:var(--tinta-suave);margin-top:.3rem}
+
+/* ---------- etiquetas ---------- */
+.etiqueta{
+  display:inline-block;font-size:.76rem;font-weight:600;
+  padding:.2rem .65rem;border-radius:var(--r-pastilla);
+  background:var(--rosa-tenue);color:var(--rosa-oscuro);
+  margin-bottom:.5rem;
+}
+
+/* ---------- lista de servicios en detalle de profesional ---------- */
+.lista-servicios{list-style:none;margin-top:1rem}
+.lista-servicios li{
+  border-bottom:1px solid var(--linea);
+  padding:.9rem 0;
+}
+.lista-servicios li:last-child{border-bottom:none}
+.lista-servicios p{color:var(--tinta-suave);font-size:.9rem;margin-top:.3rem}
+
+/* ---------- estados vacíos ---------- */
+.vacio,p:only-child{color:var(--tinta-suave)}
+
+@media (max-width:640px){
+  .barra{padding:0 16px;flex-wrap:wrap;height:auto;padding-top:12px;padding-bottom:12px}
+  .menu{gap:.8rem}
+  form{max-width:100%}
+}
+
+
+/* ---- Sprint 1: horas libres, estados de cita, botones en línea ---- */
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem}
+.chip{background:var(--rosa-tenue);color:var(--rosa-oscuro);border-radius:999px;padding:.15rem .65rem;font-size:.82rem;font-weight:500}
+.dia-disponible{margin-top:.8rem}
+.estado-confirmada,.estado-completada{background:#e5f4ea;color:#2f7a4f}
+.estado-pendiente{background:#fff4d6;color:var(--dorado)}
+.estado-cancelada{background:#fbe9e7;color:var(--rojo)}
+.inactivo{opacity:.6}
+.en-linea{display:inline;max-width:none}
+.error-pagina{text-align:center;padding:3rem 0}
+.error-pagina .codigo{font-size:3rem;color:var(--rosa)}

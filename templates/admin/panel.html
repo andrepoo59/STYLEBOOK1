@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block titulo %}Panel de administrador · StyleBook{% endblock %}
+{% block contenido %}
+  <h1>Panel de administrador</h1>
+
+  <div class="acciones" style="margin:1rem 0 1.6rem">
+    <span class="etiqueta">{{ total_aprobados }} proveedores publicados</span>
+    <span class="etiqueta">{{ total_servicios }} servicios activos</span>
+  </div>
+
+  <h2>Solicitudes de registro pendientes</h2>
+  {% if pendientes %}
+    <div class="rejilla">
+      {% for p in pendientes %}
+        <div class="tarjeta">
+          <h3>{{ p.nombre_negocio }}</h3>
+          <p class="detalle-menor">
+            {{ "Establecimiento" if p.tipo_proveedor == 'establecimiento' else "Profesional independiente" }}
+            &middot; {{ p.especialidad }}
+          </p>
+          <p>{{ p.descripcion or "Sin descripción" }}</p>
+          <p class="detalle-menor">
+            {% if p.ubicacion %}📍 {{ p.ubicacion }}{% endif %}
+            {% if p.telefono %} &middot; ☎ {{ p.telefono }}{% endif %}
+          </p>
+          <div class="acciones" style="margin-top:.9rem">
+            <form action="{{ url_for('admin.aprobar', profesional_id=p.id) }}" method="post">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <button type="submit" class="boton">Aprobar</button>
+            </form>
+            <form action="{{ url_for('admin.rechazar', profesional_id=p.id) }}" method="post">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <button type="submit" class="boton boton-secundario">Rechazar</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="vacio">No hay solicitudes pendientes por revisar.</p>
+  {% endif %}
+{% endblock %}

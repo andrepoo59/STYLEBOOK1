@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block titulo %}Mi agenda · StyleBook{% endblock %}
+{% block contenido %}
+  <h1>Mi agenda</h1>
+
+  <h2 style="margin-top:1.2rem">Por atender</h2>
+  {% if por_atender %}
+    <div class="rejilla">
+      {% for c in por_atender %}{% with modo='proveedor' %}{% include "citas/_tarjeta_cita.html" %}{% endwith %}{% endfor %}
+    </div>
+  {% else %}
+    <p class="vacio">No tienes citas pendientes por atender.</p>
+  {% endif %}
+
+  {% if historial %}
+    <h2 style="margin-top:2rem">Historial</h2>
+    <div class="rejilla">
+      {% for c in historial %}{% with modo='proveedor' %}{% include "citas/_tarjeta_cita.html" %}{% endwith %}{% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}

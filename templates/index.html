@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block titulo %}StyleBook · Salón de belleza y barbería{% endblock %}
+{% block contenido %}
+  <section class="hero">
+    <span class="etiqueta">Salón de belleza &amp; barbería</span>
+    <h1>Reserva tu cita sin llamadas ni WhatsApp</h1>
+    <p>Consulta el catálogo de servicios, elige a tu profesional favorito y agenda según su disponibilidad real, todo en un mismo lugar.</p>
+    <div class="acciones">
+      <a class="boton" href="{{ url_for('servicios.catalogo') }}">Ver catálogo de servicios</a>
+      <a class="boton boton-secundario" href="{{ url_for('profesionales.listar') }}">Conocer a los profesionales</a>
+    </div>
+  </section>
+{% endblock %}

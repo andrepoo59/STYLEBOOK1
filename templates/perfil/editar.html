@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block titulo %}Editar perfil · StyleBook{% endblock %}
+{% block contenido %}
+  <section class="formulario-angosto">
+    <h1>Editar perfil</h1>
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <label for="nombre">Nombre completo</label>
+      <input type="text" id="nombre" name="nombre" maxlength="100" value="{{ perfil.nombre }}" required />
+
+      <label for="telefono">Teléfono</label>
+      <input type="tel" id="telefono" name="telefono" maxlength="20" value="{{ perfil.telefono or '' }}" />
+
+      <button type="submit" class="boton">Guardar cambios</button>
+    </form>
+    <p><a href="{{ url_for('perfil.ver') }}">Volver a mi perfil</a></p>
+  </section>
+{% endblock %}

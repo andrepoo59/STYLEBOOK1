@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block titulo %}Mis citas · StyleBook{% endblock %}
+{% block contenido %}
+  <h1>Mis citas</h1>
+
+  <h2 style="margin-top:1.2rem">Próximas</h2>
+  {% if proximas %}
+    <div class="rejilla">
+      {% for c in proximas %}{% with modo='cliente' %}{% include "citas/_tarjeta_cita.html" %}{% endwith %}{% endfor %}
+    </div>
+  {% else %}
+    <p class="vacio">No tienes citas próximas. <a href="{{ url_for('profesionales.listar') }}">Reserva una</a>.</p>
+  {% endif %}
+
+  {% if historial %}
+    <h2 style="margin-top:2rem">Historial</h2>
+    <div class="rejilla">
+      {% for c in historial %}{% with modo='cliente' %}{% include "citas/_tarjeta_cita.html" %}{% endwith %}{% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}

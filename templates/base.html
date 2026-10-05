@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block titulo %}StyleBook{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}" />
+</head>
+<body>
+  {% set rol = session.get('rol') %}
+  <header class="barra">
+    <a href="{{ url_for('index') }}" class="marca">StyleBook</a>
+    <nav class="menu">
+      <a href="{{ url_for('servicios.catalogo') }}">Servicios</a>
+      <a href="{{ url_for('profesionales.listar') }}">Profesionales</a>
+      {% if session.get('access_token') %}
+        <a href="{{ url_for('perfil.ver') }}">Mi perfil</a>
+        {% if rol == 'cliente' %}
+          <a href="{{ url_for('citas.mis_citas') }}">Mis citas</a>
+        {% elif rol in ['establecimiento', 'profesional'] %}
+          <a href="{{ url_for('servicios.gestionar') }}">Mis servicios</a>
+          <a href="{{ url_for('horarios.gestionar') }}">Mi horario</a>
+          <a href="{{ url_for('citas.agenda') }}">Mi agenda</a>
+        {% elif rol == 'admin' %}
+          <a href="{{ url_for('admin.panel') }}">Panel admin</a>
+        {% endif %}
+        <a href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}">Iniciar sesión</a>
+        <a href="{{ url_for('auth.registro') }}">Registrarme</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main class="contenido">
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+      {% if mensajes %}
+        <div class="mensajes">
+          {% for categoria, mensaje in mensajes %}
+            <p class="mensaje mensaje-{{ categoria }}">{{ mensaje }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block contenido %}{% endblock %}
+  </main>
+
+  <footer class="pie">
+    <p>StyleBook &middot; Sprint 1</p>
+  </footer>
+</body>
+</html>

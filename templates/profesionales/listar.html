@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}Profesionales · StyleBook{% endblock %}
+{% block contenido %}
+  <section>
+    <h1>Salones, barberías y profesionales</h1>
+    {% if profesionales %}
+      <div class="rejilla-tarjetas">
+        {% for p in profesionales %}
+          <a class="tarjeta tarjeta-profesional" href="{{ url_for('profesionales.detalle', profesional_id=p.id) }}">
+            <div class="avatar-iniciales">{{ p.nombre_negocio[0]|upper }}</div>
+            <div>
+              <h2>{{ p.nombre_negocio }}</h2>
+              <span class="etiqueta">{{ p.especialidad }}</span>
+              <span class="etiqueta">{{ "Establecimiento" if p.tipo_proveedor == 'establecimiento' else "Independiente" }}</span>
+              <p>{{ p.descripcion or "Sin descripción" }}</p>
+              {% if p.ubicacion %}<p class="detalle-menor">📍 {{ p.ubicacion }}</p>{% endif %}
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>Todavía no hay proveedores publicados.</p>
+    {% endif %}
+  </section>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block titulo %}{{ profesional.nombre_negocio }} · StyleBook{% endblock %}
+{% block contenido %}
+  <section>
+    <div class="encabezado-profesional">
+      <div class="avatar-iniciales avatar-grande">{{ profesional.nombre_negocio[0]|upper }}</div>
+      <div>
+        <h1>{{ profesional.nombre_negocio }}</h1>
+        <span class="etiqueta">{{ profesional.especialidad }}</span>
+        <span class="etiqueta">{{ "Establecimiento" if profesional.tipo_proveedor == 'establecimiento' else "Profesional independiente" }}</span>
+      </div>
+    </div>
+    <p>{{ profesional.descripcion or "Sin descripción" }}</p>
+    <p class="detalle-menor">
+      {% if profesional.ubicacion %}📍 {{ profesional.ubicacion }}{% endif %}
+      {% if profesional.telefono %} &middot; ☎ {{ profesional.telefono }}{% endif %}
+      {% if profesional.anios_experiencia %} &middot; {{ profesional.anios_experiencia }} años de experiencia{% endif %}
+    </p>
+
+    <h2 style="margin-top:1.6rem">Servicios y precios</h2>
+    {% if servicios %}
+      <ul class="lista-servicios">
+        {% for s in servicios %}
+          <li>
+            <strong>{{ s.nombre }}</strong> — ${{ "%.2f"|format(s.precio) }} ({{ s.duracion_min }} min)
+            {% if s.descripcion %}<p>{{ s.descripcion }}</p>{% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Todavía no ha cargado servicios.</p>
+    {% endif %}
+
+    <h2 style="margin-top:1.6rem">Horario de atención</h2>
+    {% if horarios %}
+      <ul class="lista-servicios">
+        {% for h in horarios %}
+          <li><strong>{{ dias[h.dia_semana] }}</strong>: {{ h.hora_inicio[:5] }} – {{ h.hora_fin[:5] }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Todavía no ha definido su horario de atención.</p>
+    {% endif %}
+
+    <h2 style="margin-top:1.6rem">Próxima disponibilidad</h2>
+    {% if disponibilidad %}
+      <p class="detalle-menor">Horas libres en los próximos 7 días para el servicio más corto ({{ duracion_ref }} min).</p>
+      {% for d in disponibilidad %}
+        <div class="dia-disponible">
+          <strong>{{ d.dia }} {{ d.fecha.strftime('%d/%m') }}</strong>
+          <div class="chips">
+            {% for h in d.horas[:6] %}<span class="chip">{{ h }}</span>{% endfor %}
+            {% if d.horas|length > 6 %}<span class="detalle-menor">+{{ d.horas|length - 6 }} más</span>{% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No hay horas libres en los próximos 7 días.</p>
+    {% endif %}
+
+    <div style="margin-top:1.6rem">
+      {% if not session.get('access_token') %}
+        <p><a href="{{ url_for('auth.login', volver=request.path) }}">Inicia sesión</a> para reservar una cita.</p>
+      {% elif session.get('rol') == 'cliente' %}
+        <a href="{{ url_for('citas.reservar', profesional_id=profesional.id) }}" class="boton">Reservar cita</a>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

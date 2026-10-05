@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block titulo %}Servicios · StyleBook{% endblock %}
+{% block contenido %}
+  <section>
+    <h1>Catálogo de servicios</h1>
+
+    <div class="acciones" style="margin:1.1rem 0 0;flex-wrap:wrap">
+      <a class="boton{{ '' if categoria else ' boton-secundario' }}" href="{{ url_for('servicios.catalogo') }}">Todos</a>
+      {% for c in categorias if c != 'general' %}
+        <a class="boton{{ '' if categoria == c else ' boton-secundario' }}"
+           href="{{ url_for('servicios.catalogo', categoria=c) }}">{{ c|capitalize }}</a>
+      {% endfor %}
+    </div>
+
+    {% if servicios %}
+      <div class="rejilla-tarjetas">
+        {% for s in servicios %}
+          <div class="tarjeta">
+            <span class="etiqueta">{{ s.categoria }}</span>
+            <h2>{{ s.nombre }}</h2>
+            <p>{{ s.descripcion or "" }}</p>
+            <p class="precio">${{ "%.2f"|format(s.precio) }}</p>
+            <p class="detalle-menor">{{ s.duracion_min }} min</p>
+            {% if s.profesionales %}
+              <p class="detalle-menor">
+                <a href="{{ url_for('profesionales.detalle', profesional_id=s.profesionales.id) }}">{{ s.profesionales.nombre_negocio }}</a>
+                &middot; {{ s.profesionales.especialidad }}
+                {% if s.profesionales.ubicacion %}<br>📍 {{ s.profesionales.ubicacion }}{% endif %}
+              </p>
+              {% if session.get('rol') == 'cliente' %}
+                <p><a class="boton boton-secundario"
+                      href="{{ url_for('citas.reservar', profesional_id=s.profesionales.id, servicio_id=s.id) }}">Reservar</a></p>
+              {% endif %}
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="vacio">Todavía no hay servicios cargados{{ ' en esta categoría' if categoria else '' }}.</p>
+    {% endif %}
+  </section>
+{% endblock %}

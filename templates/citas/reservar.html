@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block titulo %}Reservar cita · StyleBook{% endblock %}
+{% block contenido %}
+  <section>
+    <h1>Reservar con {{ profesional.nombre_negocio }}</h1>
+    {% if profesional.ubicacion %}<p class="detalle-menor">📍 {{ profesional.ubicacion }}</p>{% endif %}
+
+    {% if not servicios %}
+      <p>Este proveedor todavía no tiene servicios disponibles para reservar.</p>
+    {% else %}
+    <form method="post" id="form-reserva" class="formulario">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <label>Servicio
+        <select name="servicio_id" id="servicio_id" required>
+          <option value="">Selecciona un servicio</option>
+          {% for s in servicios %}
+            <option value="{{ s.id }}" {% if s.id == servicio_id %}selected{% endif %}>
+              {{ s.nombre }} — ${{ "%.2f"|format(s.precio) }} ({{ s.duracion_min }} min)
+            </option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>Fecha
+        <input type="date" name="fecha" id="fecha" value="{{ fecha or '' }}"
+               min="{{ fecha_min }}" max="{{ fecha_max }}" required>
+      </label>
+
+      <label>Horario disponible
+        <select name="hora_inicio" id="hora_inicio" required>
+          {% if horarios_libres %}
+            {% for h in horarios_libres %}<option value="{{ h }}">{{ h }}</option>{% endfor %}
+          {% else %}
+            <option value="">Elige servicio y fecha primero</option>
+          {% endif %}
+        </select>
+      </label>
+      <p class="detalle-menor" id="aviso-horarios"></p>
+
+      <button type="submit">Confirmar reserva</button>
+    </form>
+    {% endif %}
+  </section>
+
+  <script>
+    // Refresca las horas realmente libres al cambiar servicio o fecha.
+    const profesionalId = "{{ profesional.id }}";
+    const selectServicio = document.getElementById("servicio_id");
+    const inputFecha = document.getElementById("fecha");
+    const selectHorario = document.getElementById("hora_inicio");
+    const aviso = document.getElementById("aviso-horarios");
+
+    async function actualizarHorarios() {
+      const servicioId = selectServicio.value;
+      const fecha = inputFecha.value;
+      aviso.textContent = "";
+      if (!servicioId || !fecha) return;
+
+      const url = `/profesionales/${profesionalId}/horarios-disponibles?servicio_id=${encodeURIComponent(servicioId)}&fecha=${encodeURIComponent(fecha)}`;
+      const resp = await fetch(url);
+      const datos = await resp.json();
+
+      selectHorario.innerHTML = "";
+      if (datos.horarios.length === 0) {
+        selectHorario.innerHTML = '<option value="">Sin horarios libres ese día</option>';
+        aviso.textContent = datos.aviso || "";
+        return;
+      }
+      datos.horarios.forEach((h) => {
+        const opcion = document.createElement("option");
+        opcion.value = h;
+        opcion.textContent = h;
+        selectHorario.appendChild(opcion);
+      });
+    }
+
+    if (selectServicio) {
+      selectServicio.addEventListener("change", actualizarHorarios);
+      inputFecha.addEventListener("change", actualizarHorarios);
+      if (selectServicio.value && inputFecha.value && selectHorario.value === "") actualizarHorarios();
+    }
+  </script>
+{% endblock %}

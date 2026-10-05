@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titulo %}Mi perfil · StyleBook{% endblock %}
+{% block contenido %}
+  {% set tipos = {'cliente': 'Cliente', 'establecimiento': 'Establecimiento', 'profesional': 'Profesional independiente', 'admin': 'Administrador'} %}
+  <section class="formulario-angosto">
+    <h1>Mi perfil</h1>
+    <p><strong>Nombre:</strong> {{ perfil.nombre }}</p>
+    <p><strong>Teléfono:</strong> {{ perfil.telefono or "No registrado" }}</p>
+    <p><strong>Tipo de cuenta:</strong> {{ tipos.get(perfil.rol, perfil.rol) }}</p>
+
+    {% if negocio %}
+      <h2 style="margin-top:1.4rem">Mi negocio</h2>
+      <p><strong>{{ negocio.nombre_negocio }}</strong> &middot; {{ negocio.especialidad }}</p>
+      <p><strong>Ubicación:</strong> {{ negocio.ubicacion or "No registrada" }}</p>
+      <p><strong>Estado:</strong>
+        <span class="etiqueta">{{ {'pendiente': 'En revisión', 'aprobado': 'Publicado', 'rechazado': 'Rechazado'}[negocio.estado] }}</span>
+      </p>
+    {% endif %}
+
+    <div class="acciones">
+      <a class="boton" href="{{ url_for('perfil.editar') }}">Editar perfil</a>
+      {% if perfil.rol in ['establecimiento', 'profesional'] %}
+        <a class="boton boton-secundario" href="{{ url_for('profesionales.editar_negocio') if negocio else url_for('profesionales.registro') }}">
+          {{ "Editar mi negocio" if negocio else "Registrar mi negocio" }}
+        </a>
+        <a class="boton boton-secundario" href="{{ url_for('servicios.gestionar') }}">Gestionar mis servicios</a>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

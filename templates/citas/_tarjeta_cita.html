@@ -1,0 +1,49 @@
+{# Tarjeta de cita. Variables: c (cita preparada), modo ('cliente' | 'proveedor') #}
+<div class="tarjeta">
+  <span class="etiqueta estado-{{ c.estado }}">{{ c.estado }}</span>
+  <h3>{{ c.servicios.nombre if c.servicios else "Servicio" }}</h3>
+  {% if modo == 'cliente' %}
+    <p class="detalle-menor">
+      {% if c.profesionales %}
+        Con <a href="{{ url_for('profesionales.detalle', profesional_id=c.profesionales.id) }}">{{ c.profesionales.nombre_negocio }}</a>
+        &middot; {{ c.profesionales.especialidad }}
+        {% if c.profesionales.ubicacion %}<br>📍 {{ c.profesionales.ubicacion }}{% endif %}
+      {% else %}Proveedor no disponible{% endif %}
+    </p>
+  {% else %}
+    <p class="detalle-menor">Cliente: {{ c.cliente_nombre or "—" }}</p>
+  {% endif %}
+  <p>{{ c.fecha_txt }} &middot; {{ c.hora_txt }}</p>
+
+  {% if modo == 'cliente' and c.activa and not c.ya_empezo %}
+    <div class="acciones" style="margin-top:.9rem">
+      <a class="boton boton-secundario" href="{{ url_for('citas.reprogramar', cita_id=c.id) }}">Reprogramar</a>
+      <form action="{{ url_for('citas.cancelar', cita_id=c.id) }}" method="post" class="en-linea">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button type="submit" class="boton-secundario" onclick="return confirm('¿Cancelar esta cita?')">Cancelar</button>
+      </form>
+    </div>
+  {% elif modo == 'proveedor' and c.activa %}
+    <div class="acciones" style="margin-top:.9rem">
+      {% if c.estado == 'pendiente' %}
+        <form action="{{ url_for('citas.agenda_estado', cita_id=c.id) }}" method="post" class="en-linea">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <input type="hidden" name="estado" value="confirmada" />
+          <button type="submit" class="boton">Confirmar</button>
+        </form>
+      {% endif %}
+      {% if c.estado == 'confirmada' and c.ya_empezo %}
+        <form action="{{ url_for('citas.agenda_estado', cita_id=c.id) }}" method="post" class="en-linea">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <input type="hidden" name="estado" value="completada" />
+          <button type="submit" class="boton">Marcar completada</button>
+        </form>
+      {% endif %}
+      <form action="{{ url_for('citas.agenda_estado', cita_id=c.id) }}" method="post" class="en-linea">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <input type="hidden" name="estado" value="cancelada" />
+        <button type="submit" class="boton-secundario" onclick="return confirm('¿Cancelar esta cita?')">Cancelar</button>
+      </form>
+    </div>
+  {% endif %}
+</div>
